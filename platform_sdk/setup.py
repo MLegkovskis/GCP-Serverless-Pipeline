@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='ntg_sdk',
-    version='0.1.1',
+    version='0.1.2',
     description='SDK for interacting with the Hello Cloud Function',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
