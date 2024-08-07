@@ -66,7 +66,7 @@ The pipeline supports `dev` and `prod` environments, distinguished by the branch
 
 Environment-specific configurations, such as the state file prefix and Cloud Function name, are managed using environment variables. Thus, a push on the dev branch will create a cloud function with a `dev-` prefix and a push to the main branch will create a cloud function with a `prod-` prefix. 
 
-![alt text](image.png)
+![alt text](cloud_functions_example.png)
 
 ### Technical Details
 
