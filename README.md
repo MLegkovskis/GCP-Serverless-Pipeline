@@ -56,6 +56,18 @@ The deploy stage includes:
 - **Destroying infrastructure**: Ensures previous deployments are cleaned up using the `terraform destroy` command.
 - **Applying Terraform**: Deploys the Cloud Function using the `terraform apply` command.
 
+
+### Branching Strategy
+
+The pipeline supports `dev` and `prod` environments, distinguished by the branch name:
+
+- **Dev**: Triggered by pushes to the `dev` branch.
+- **Prod**: Triggered by pushes to the `main` branch.
+
+Environment-specific configurations, such as the state file prefix and Cloud Function name, are managed using environment variables. Thus, a push on the dev branch will create a cloud function with a `dev-` prefix and a push to the main branch will create a cloud function with a `prod-` prefix. 
+
+![alt text](image.png)
+
 ### Technical Details
 
 The CI/CD pipeline runs on `ubuntu-latest`, which is a "shared runner" provided by GitHub Actions.
@@ -120,15 +132,6 @@ gcloud projects add-iam-policy-binding next-gate-tech-project \
 ### Backend Configuration
 
 To manage state consistently across environments, I used a GCS backend for Terraform. The backend configuration is passed as environment variables during the `terraform init` step, ensuring the correct state file is used for each environment (`dev` or `prod`).
-
-### Branching Strategy
-
-The pipeline supports `dev` and `prod` environments, distinguished by the branch name:
-
-- **Dev**: Triggered by pushes to the `dev` branch.
-- **Prod**: Triggered by pushes to the `main` branch.
-
-Environment-specific configurations, such as the state file prefix and Cloud Function name, are managed using environment variables. Thus, a push on the dev branch will create a cloud function with a `dev-` prefix and a push to the main branch will create a cloud function with a `prod-` prefix. 
 
 ### Required APIs
 

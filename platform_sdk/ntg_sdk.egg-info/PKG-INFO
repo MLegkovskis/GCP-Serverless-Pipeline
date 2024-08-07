@@ -1,3 +1,14 @@
+Metadata-Version: 2.1
+Name: ntg-sdk
+Version: 0.1.2
+Summary: SDK for interacting with the Hello Cloud Function
+Home-page: UNKNOWN
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+
 ### README.md
 
 # NTG SDK
@@ -38,26 +49,6 @@ The NTG SDK provides a command-line tool to interact with the Hello Next Gate Te
      ntg-sdk https://europe-west2-next-gate-tech-project.cloudfunctions.net/prod-hello_next_gate_tech message.json
      ```
 
-   **Expected Output**
-   ```
-   Debug: Generated expected response: Hello, Next Gate Tech! Mark Here!
-   +-----------------------------------+
-   | Expected response from main.py:   |
-   | Hello, Next Gate Tech! Mark Here! |
-   +-----------------------------------+
-   +-----------------------------------------------------------------------------------------+
-   | Calling the Cloud Function at:                                                          |
-   | https://europe-west2-next-gate-tech-project.cloudfunctions.net/dev-hello_next_gate_tech |
-   +-----------------------------------------------------------------------------------------+
-   +-----------------------------------+
-   | Function response:                |
-   | Hello, Next Gate Tech! Mark Here! |
-   +-----------------------------------+
-   +-------------------------------------------------------------------------+
-   | Sanity check passed: The function response matches the expected output. |
-   +-------------------------------------------------------------------------+
-   ```
-
 ## Command-Line Tool
 
 - **Installation**: The `ntg-sdk` command-line tool is installed via the `setup.py` script.
@@ -67,3 +58,5 @@ The NTG SDK provides a command-line tool to interact with the Hello Next Gate Te
 
 - **Python 3.6+**
 - **Requests Library**
+
+
