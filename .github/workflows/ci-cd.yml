@@ -90,4 +90,4 @@ jobs:
         working-directory: terraform
 
       - name: Print the list of active Cloud Functions trigger URLs using gcloud
-        run: gcloud functions list --format="value(httpsTrigger.url)"
+        run: sleep 10 && gcloud functions list --format="value(httpsTrigger.url)"
