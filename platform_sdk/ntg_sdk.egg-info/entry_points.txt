@@ -1,0 +1,3 @@
+[console_scripts]
+ntg-sdk = sdk:main
+

@@ -95,7 +95,7 @@ google_cloudfunctions_function.function: Modifying... [id=projects/next-gate-tec
 
 This error indicates that the default service account `github-actions-deploy@next-gate-tech-project.iam.gserviceaccount.com` does not exist, despite it being present, of course and being able to do a clean terraform apply every time. This issue only arises when the zip file name is updated, suggesting that Terraform's incremental update process somehow mismanages the service account configuration?
 
-However, when I use the destroy and recreate approach, Terraform performs a more thorough reconfiguration, which seems to avoid this issue. This discrepancy could imply a problem in my setup or a limitation in how Terraform handles partial updates to Google Cloud Functions, specifically related to service account handling during in-place updates. By forcing a full destroy and recreate, I bypass this problem, ensuring that the correct service account configuration is applied consistently but I do fully recognize potential drawbacks of this approach.
+However, when I use the destroy and recreate approach, Terraform performs a more thorough reconfiguration, which seems to avoid this issue. This discrepancy could imply a problem in my setup or a limitation in how Terraform handles partial updates to Google Cloud Functions, specifically related to service account handling during in-place updates. By forcing a full destroy and recreate, I bypass this problem, ensuring that the correct service account configuration is applied consistently but I do fully recognize the drawbacks of this approach.
 
 ### Service Account Permissions
 

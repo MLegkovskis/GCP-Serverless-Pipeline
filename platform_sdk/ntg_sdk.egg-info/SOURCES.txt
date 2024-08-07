@@ -1,0 +1,8 @@
+README.md
+setup.py
+ntg_sdk.egg-info/PKG-INFO
+ntg_sdk.egg-info/SOURCES.txt
+ntg_sdk.egg-info/dependency_links.txt
+ntg_sdk.egg-info/entry_points.txt
+ntg_sdk.egg-info/requires.txt
+ntg_sdk.egg-info/top_level.txt
