@@ -33,7 +33,7 @@ resource "google_cloudfunctions_function" "function" {
   available_memory_mb = 128
   timeout = 60
   service_account_email = "github-actions-deploy@next-gate-tech-project.iam.gserviceaccount.com"
-
+  ingress_settings = "ALLOW_INTERNAL_ONLY"
   lifecycle {
     create_before_destroy = true
   }
