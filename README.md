@@ -47,10 +47,10 @@ graph TD
     D -- Run Terraform --> G
     D -- Run Terraform --> H
 
-    linkStyle 4 stroke-width:2px,fill:none,stroke:green;
-    linkStyle 5 stroke-width:2px,fill:none,stroke:orange;
-    linkStyle 6 stroke-width:2px,fill:none,stroke:blue;
-    linkStyle 7 stroke-width:2px,fill:none,stroke:blue;
+    linkStyle 3 stroke-width:2px,stroke:green;
+    linkStyle 4 stroke-width:2px,stroke:orange;
+    linkStyle 5 stroke-width:2px,stroke:blue;
+    linkStyle 6 stroke-width:2px,stroke:blue;
 ```
 
 -----
