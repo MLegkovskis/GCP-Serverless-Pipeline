@@ -1,144 +1,167 @@
-# Next Gate Tech Platform Engineering Assignment
+# **GCP Serverless Pipeline**
 
-## Overview
+[](https://www.google.com/search?q=https://github.com/YOUR_USERNAME/YOUR_REPOSITORY/actions/workflows/ci-cd.yml)
+[](https://opensource.org/licenses/MIT)
 
-This repository contains a Platform Engineering assignment for Next Gate Tech.
+A complete, automated CI/CD pipeline to build, test, and deploy a Python serverless function on the Google Cloud Platform. This project demonstrates best practices for Infrastructure as Code (IaC), multi-environment workflows, and automated testing.
 
-## Repository Structure
+## **🚀 Key Features**
 
-```
-.
-├── README.md
-├── main.py
-├── requirements.txt
-├── terraform
-│   └── main.tf
-└── tests
-    ├── __init__.py
-    └── test_app.py
-```
+  * **Automated CI/CD:** The entire lifecycle is managed by a GitHub Actions pipeline.
+  * **Multi-Environment Deployment:** Automatically deploys to a `dev` or `prod` environment based on the Git branch (`dev` vs. `main`).
+  * **Infrastructure as Code (IaC):** All GCP resources are provisioned and managed by **Terraform**.
+  * **Remote State Management:** Terraform state is securely stored and managed in a GCS bucket to ensure consistency across all environments.
+  * **Custom SDK:** Includes a custom Python SDK to interact with the deployed function and perform sanity checks.
+  * **Automated Testing & Linting:** Code quality is maintained with `pytest` for testing and `flake8` for linting.
 
-## Objectives
+-----
 
-1. Set up a CI/CD pipeline using GitHub Actions.
-2. Deploy a Google Cloud Function with stages for `dev` and `prod` environments.
-3. Provision necessary access using Terraform.
-4. Create an SDK (A software development kit)
+## **🏛️ Architecture Diagram**
 
-## CI/CD Pipeline details
+The diagram below illustrates the flow from a `git push` to the final deployment on GCP.
 
-The CI/CD pipeline is defined in `.github/workflows/ci-cd.yml`. It includes the following stages:
+*(**Note:** A visual diagram is a critical component of a DevOps portfolio. Please create your own and replace the placeholder below.)*
 
-- **Build and Test**: Lints the code, runs tests, and verifies the deployment package.
-- **Deploy**: Deploys the Google Cloud Function using Terraform. This includes a step to destroy any existing infrastructure to ensure a clean state.
+-----
 
-### Build and Test
+## **🛠️ Tech Stack**
 
-The build and test stage includes:
+| Tool | Purpose |
+| :--- | :--- |
+|  | Cloud Provider & Hosting |
+|  | CI/CD Automation |
+|  | Infrastructure as Code |
+|  | Application & SDK Language |
+|  | Testing Framework |
+|  | Code Linting |
 
-- **Checking out the code**: Uses the `actions/checkout@v4` action to pull the latest code from the repository.
-- **Setting up Python**: Uses the `actions/setup-python@v4` action to set up the Python environment.
-- **Installing dependencies**: Installs the required packages using `pip`.
-- **Linting the code**: Runs `flake8` to ensure code quality.
-- **Running tests**: Executes tests using `pytest`.
+-----
 
-### Deploy
+## **⚙️ Getting Started**
 
-The deploy stage includes:
+### **Prerequisites**
 
-- **Checking out the code**: Uses the `actions/checkout@v4` action to pull the latest code from the repository.
-- **Authenticating to Google Cloud**: Uses the `google-github-actions/auth@v2` action to authenticate with Google Cloud using a service account.
-- **Setting up Google Cloud SDK**: Uses the `google-github-actions/setup-gcloud@v2` action to set up the Google Cloud SDK.
-- **Creating deployment package**: Packages the Cloud Function into a zip file.
-- **Verifying deployment package content**: Ensures the zip file is valid and contains the correct content.
-- **Uploading the package to GCS**: Uploads the deployment package to Google Cloud Storage.
-- **Initializing Terraform**: Configures the backend and prepares for deployment using the `terraform init` command.
-- **Destroying infrastructure**: Ensures previous deployments are cleaned up using the `terraform destroy` command.
-- **Applying Terraform**: Deploys the Cloud Function using the `terraform apply` command.
+To replicate this project, you'll need the following:
 
+1.  **A Google Cloud Platform Account & Project.**
+2.  **Required GCP APIs Enabled:**
+      * Cloud Functions API
+      * Cloud Build API
+      * IAM Service Account Credentials API
+      * Cloud Storage API
+      * Cloud Resource Manager API
+3.  **Terraform CLI** installed locally.
+4.  **A GCP Service Account** with the necessary permissions.
 
-### Branching Strategy
+### **Service Account Permissions**
 
-The pipeline supports `dev` and `prod` environments, distinguished by the branch name:
+The pipeline authenticates using a Service Account. It requires the following IAM roles:
 
-- **Dev**: Triggered by pushes to the `dev` branch.
-- **Prod**: Triggered by pushes to the `main` branch.
+  * `roles/iam.serviceAccountUser`
+  * `roles/cloudfunctions.developer`
 
-Environment-specific configurations, such as the state file prefix and Cloud Function name, are managed using environment variables. Thus, a push on the dev branch will create a cloud function with a `dev-` prefix and a push to the main branch will create a cloud function with a `prod-` prefix. 
-
-![alt text](cloud_functions_example.png)
-
-### Technical Details
-
-The CI/CD pipeline runs on `ubuntu-latest`, which is a "shared runner" provided by GitHub Actions.
-
-
-## Decisions and Challenges
-
-### Tracking Changes in Zip Files
-
-Initially, Terraform did not track changes in the zip file used for the Cloud Function. To ensure that Terraform detects changes and redeploys the function accordingly, I decided to include a unique name for the zip file in each pipeline run. This approach guarantees that updates to the function are always applied despite there not being infra changes. However, when I managed to get Terraform to recognize that the zip file had changed, I encountered another issue:
-
-```
-data.google_storage_bucket.function_bucket: Reading...
-data.google_storage_bucket.function_bucket: Read complete after 0s [id=next-gate-tech-project-functions]
-google_cloudfunctions_function.function: Refreshing state... [id=projects/next-gate-tech-project/locations/europe-west2/functions/hello_next_gate_tech]
-Terraform used the selected providers to generate the following execution
-plan. Resource actions are indicated with the following symbols:
- ~ update in-place
-Terraform will perform the following actions:
- # google_cloudfunctions_function.function will be updated in-place
- ~ resource "google_cloudfunctions_function" "function" 
- id = "projects/next-gate-tech-project/locations/europe-west2/functions/hello_next_gate_tech"
- name = "hello_next_gate_tech"
- ~ source_archive_object = "function_1722984208.zip" -> "function_1722984375.zip"
- # (28 unchanged attributes hidden)
- 
-Plan: 0 to add, 1 to change, 0 to destroy.
-google_cloudfunctions_function.function: Modifying... [id=projects/next-gate-tech-project/locations/europe-west2/functions/hello_next_gate_tech]
-╷
-│ Error: Error while updating cloudfunction configuration: googleapi: Error 400: Default service account 'github-actions-deploy@next-gate-tech-project.iam.gserviceaccount.com' doesn't exist. Please recreate this account or specify a different account. Please visit https://cloud.google.com/functions/docs/troubleshooting for in-depth troubleshooting documentation., failedPrecondition
-│
-│ with google_cloudfunctions_function.function,
-│ on main.tf line 22, in resource "google_cloudfunctions_function" "function":
-│ 22: resource "google_cloudfunctions_function" "function" ***
-│
-```
-
-This error indicates that the default service account `github-actions-deploy@next-gate-tech-project.iam.gserviceaccount.com` does not exist, despite it being present, of course and being able to do a clean terraform apply every time. This issue only arises when the zip file name is updated, suggesting that Terraform's incremental update process somehow mismanages the service account configuration?
-
-However, when I use the destroy and recreate approach, Terraform performs a more thorough reconfiguration, which seems to avoid this issue. This discrepancy could imply a problem in my setup or a limitation in how Terraform handles partial updates to Google Cloud Functions, specifically related to service account handling during in-place updates. By forcing a full destroy and recreate, I bypass this problem, ensuring that the correct service account configuration is applied consistently but I do fully recognize potential drawbacks of this approach.
-
-### Service Account Permissions
-
-To deploy the Cloud Function and manage resources, I used a service account (`github-actions-deploy@next-gate-tech-project.iam.gserviceaccount.com`). I encountered several permissions issues, which required careful management of IAM roles. The following roles were granted to the service account:
-
-- **Service Account User**: To allow the service account to act as other service accounts.
-- **Cloud Functions Developer**: To deploy and manage Cloud Functions.
-
-I used the following `gcloud` commands to grant these roles:
+You can grant these roles using the `gcloud` CLI:
 
 ```bash
-gcloud projects add-iam-policy-binding next-gate-tech-project \
-  --member="serviceAccount:github-actions-deploy@next-gate-tech-project.iam.gserviceaccount.com" \
+# Replace {PROJECT_ID} and {SA_EMAIL} with your values
+gcloud projects add-iam-policy-binding {PROJECT_ID} \
+  --member="serviceAccount:{SA_EMAIL}" \
   --role="roles/iam.serviceAccountUser"
 
-gcloud projects add-iam-policy-binding next-gate-tech-project \
-  --member="serviceAccount:github-actions-deploy@next-gate-tech-project.iam.gserviceaccount.com" \
+gcloud projects add-iam-policy-binding {PROJECT_ID} \
+  --member="serviceAccount:{SA_EMAIL}" \
   --role="roles/cloudfunctions.developer"
-
 ```
 
-### Backend Configuration
+### **Setup & Deployment**
 
-To manage state consistently across environments, I used a GCS backend for Terraform. The backend configuration is passed as environment variables during the `terraform init` step, ensuring the correct state file is used for each environment (`dev` or `prod`).
+1.  **Clone the Repository**
 
-### Required APIs
+    ```sh
+    git clone https://github.com/your_username/your_project.git
+    cd your_project
+    ```
 
-To successfully deploy and manage the Cloud Functions using Terraform, I had to enable several Google Cloud APIs. The APIs I enabled are:
+2.  **Create GCS Buckets**
 
-- **Cloud Functions API**: Allows the creation and management of Cloud Functions.
-- **Cloud Build API**: Required for building and deploying Cloud Functions.
-- **IAM Service Account Credentials API**: Manages and retrieves service account credentials.
-- **Cloud Storage API**: Manages the storage of deployment packages and Terraform state files.
-- **Cloud Resource Manager API**: Provides methods for creating, reading, and modifying Google Cloud resources.
+      * You need two GCS buckets:
+          * One for the **Terraform remote state**, as defined in `terraform/main.tf`.
+          * One for the **Cloud Function's zipped source code**.
+      * Update the bucket names in `terraform/main.tf` and `.github/workflows/ci-cd.yml` with your bucket names.
+
+3.  **Configure GitHub Secrets**
+
+      * In your GitHub repository settings, go to `Secrets and variables` \> `Actions`.
+      * Create a new repository secret named `GCP_SA_KEY`.
+      * Paste the entire JSON key of your GCP Service Account as the secret's value.
+
+4.  **Trigger the Pipeline**
+
+      * Push a commit to the `dev` or `main` branch to trigger the GitHub Actions workflow. The pipeline will automatically build, test, and deploy the function to the corresponding environment.
+
+-----
+
+## **🔬 Custom SDK for Sanity Checks**
+
+This project includes a command-line SDK to interact with the deployed function and verify its response.
+
+### **Installation**
+
+Install the SDK in editable mode from the root directory:
+
+```sh
+pip install -e platform_sdk/
+```
+
+### **Usage**
+
+The SDK takes the function URL and a path to a JSON payload as arguments. It calls the live function, compares its response to a locally generated expected response, and confirms if they match.
+
+1.  **Run the SDK command:**
+    ```sh
+    # Get the URL from the GitHub Actions output or GCP console
+    FUNCTION_URL="https://your-function-url..."
+
+    # Run the sanity check with your own message.json
+    ntg-sdk $FUNCTION_URL message.json
+    ```
+2.  **Expected Output:**
+    ```
+    +-----------------------------------+
+    | Expected response from main.py:   |
+    | Hello, World! Mark Here!          |
+    +-----------------------------------+
+    +-----------------------------------+
+    | Function response:                |
+    | Hello, World! Mark Here!          |
+    +-----------------------------------+
+    +-------------------------------------------------------------------------+
+    | Sanity check passed: The function response matches the expected output. |
+    +-------------------------------------------------------------------------+
+    ```
+
+-----
+
+## **💡 Design Decisions & Rationale**
+
+### **Forcing Redeployment with `destroy` and `apply`**
+
+During development, it was observed that a standard `terraform apply` would not always trigger a redeployment when only the function's source code (`.zip` file) changed. This led to an inconsistent state where infrastructure updates were applied, but code updates were not.
+
+When this was addressed by forcing a new zip file name on each run, a `failedPrecondition` error occurred during the in-place update:
+
+```
+Error: Error while updating cloudfunction configuration: googleapi: Error 400:
+Default service account '...' doesn't exist. ... failedPrecondition
+```
+
+**Solution:** The CI/CD pipeline was designed to explicitly run `terraform destroy` before `terraform apply`.
+
+  * **Reasoning:** This approach guarantees a clean, idempotent deployment on every run. It completely avoids the in-place update issues and ensures the correct service account configuration and newest function code are always successfully applied.
+  * **Trade-off:** This method introduces a brief moment of downtime between the destroy and apply steps. For a production-critical system, a more advanced strategy like blue-green or canary deployments would be implemented. However, for the scope of this project, deployment reliability and consistency were prioritized.
+
+-----
+
+## **License**
+
+This project is licensed under the MIT License.
