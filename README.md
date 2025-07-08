@@ -20,7 +20,38 @@ A complete, automated CI/CD pipeline to build, test, and deploy a Python serverl
 
 The diagram below illustrates the flow from a `git push` to the final deployment on GCP.
 
-*(**Note:** A visual diagram is a critical component of a DevOps portfolio. Please create your own and replace the placeholder below.)*
+```mermaid
+graph TD
+    subgraph "GitHub Repository"
+        A[Developer pushes to 'dev' or 'main' branch]
+    end
+
+    subgraph "GitHub Actions CI/CD"
+        B{Trigger Workflow}
+        C[Job: Build & Test]
+        D[Job: Deploy]
+    end
+
+    subgraph "Google Cloud Platform"
+        E[GCS Bucket for TF State]
+        F[GCS Bucket for Function .zip]
+        G[Cloud Function 'dev']
+        H[Cloud Function 'prod']
+    end
+
+    A --> B
+    B --> C
+    C -- Lint & Test --> D
+    D -- Create & Upload .zip --> F
+    D -- Run Terraform --> E
+    D -- Run Terraform --> G
+    D -- Run Terraform --> H
+
+    linkStyle 4 stroke-width:2px,fill:none,stroke:green;
+    linkStyle 5 stroke-width:2px,fill:none,stroke:orange;
+    linkStyle 6 stroke-width:2px,fill:none,stroke:blue;
+    linkStyle 7 stroke-width:2px,fill:none,stroke:blue;
+```
 
 -----
 
@@ -28,12 +59,12 @@ The diagram below illustrates the flow from a `git push` to the final deployment
 
 | Tool | Purpose |
 | :--- | :--- |
-|  | Cloud Provider & Hosting |
-|  | CI/CD Automation |
-|  | Infrastructure as Code |
-|  | Application & SDK Language |
-|  | Testing Framework |
-|  | Code Linting |
+|  **Google Cloud** | Cloud Provider & Hosting |
+|  **GitHub Actions** | CI/CD Automation |
+|  **Terraform** | Infrastructure as Code |
+|  **Python** | Application & SDK Language |
+|  **Pytest** | Testing Framework |
+|  **Flake8** | Code Linting |
 
 -----
 
